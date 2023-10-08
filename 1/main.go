@@ -57,4 +57,14 @@ func main() {
 	pills = PillsFactory("незнамо что")
 	pills.TakePills()
 	fmt.Println(" <------------> ")
+
+	// Strategy:
+	fmt.Println("#% Strategy: ")
+	quick := QuickSort{}
+	st := NewStore(quick)
+	st.Add(10)
+	merge := MergerSort{}
+	st.SetSort(merge)
+	st.Add(12)
+	fmt.Println(" <------------> ")
 }
