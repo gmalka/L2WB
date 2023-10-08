@@ -40,4 +40,21 @@ func main() {
 	terminal.OpenGate()
 	terminal.RunVentilation()
 	fmt.Println(" <------------> ")
+
+	// Chain-of-responsibility:
+	fmt.Println("#% Chain-of-responsibility: ")
+	compbuilder := NewComputerBuilder()
+	comp := NewComputer()
+	compbuilder.execute(comp)
+	fmt.Println(" <------------> ")
+
+	// Factory method:
+	fmt.Println("#% Factory method: ")
+	pills := PillsFactory("ново-пассит")
+	pills.TakePills()
+	pills = PillsFactory("ибупрофен")
+	pills.TakePills()
+	pills = PillsFactory("незнамо что")
+	pills.TakePills()
+	fmt.Println(" <------------> ")
 }
