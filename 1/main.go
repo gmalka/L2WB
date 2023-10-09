@@ -67,4 +67,18 @@ func main() {
 	st.SetSort(merge)
 	st.Add(12)
 	fmt.Println(" <------------> ")
+
+	// State:
+	fmt.Println("#% State: ")
+	mech := NewMechanism()
+
+	mech.DoHardWork()
+	mech.DoHardWork()
+	mech.DoHardWork()
+	mech.DoHardWork()
+	mech.DoHardWork()
+	mech.DoRegularWork()
+	mech.Wait()
+	mech.Wait()
+	fmt.Println(" <------------> ")
 }
