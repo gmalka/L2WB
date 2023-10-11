@@ -63,11 +63,11 @@ func TestDecode(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "Regular test 6",
+			name: "Regular test 7",
 			args: args{
-				str: `п10ривет`,
+				str: `п10ривет медве3д2`,
 			},
-			want:    "ппппппппппривет",
+			want:    "ппппппппппривет медвееедд",
 			wantErr: false,
 		},
 		{

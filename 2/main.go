@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	fmt.Println(Decode(`a4bc2d3e`))
+	fmt.Println(decode(``))
 }
 
-func Decode(str string) (string, error) {
+func decode(str string) (string, error) {
 	var (
 		symbol rune
 		esc    bool
@@ -29,8 +29,11 @@ func Decode(str string) (string, error) {
 			l *= 10
 			l += int(v - '0')
 		} else {
-			fmt.Println(l % n, l, n)
-			for i := l % n; i > 0; i-- {
+			if l > 1 {
+				for i := l % n; i > 0; i-- {
+					result = append(result, symbol)
+				}
+			} else if symbol != 0 {
 				result = append(result, symbol)
 			}
 			symbol = v
@@ -42,9 +45,27 @@ func Decode(str string) (string, error) {
 	if esc {
 		return "", errors.New("incorrect string")
 	}
-	for i := l % n; i > 0; i-- {
+	if l > 1 {
+		for i := l % n; i > 0; i-- {
+			result = append(result, symbol)
+		}
+	} else if symbol != 0 {
 		result = append(result, symbol)
 	}
 
+	// fmt.Printf("|%v|", result)
 	return string(result), nil
 }
+
+/*
+
+	aaaabccddddde
+	aaaabccddddde
+
+*/
+
+// 4gg
+
+// 14 100
+// 1   1
+// 4   10
