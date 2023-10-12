@@ -1,16 +1,23 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"flag"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
-type sorter interface {
+type sortstore interface {
 	add(str string)
 	sort(bool) []string
+}
+
+type sorter interface {
+	getsorted() ([]string, error)
 }
 
 type StringSliceFlag [][]int
@@ -34,12 +41,12 @@ func (s *StringSliceFlag) Set(value string) error {
 		result = append(result, val)
 	}
 
-
 	*s = append(*s, result)
 	return nil
 }
 
 func main() {
+	t := time.Now()
 	var (
 		left StringSliceFlag
 	)
@@ -48,5 +55,29 @@ func main() {
 
 	flag.Parse()
 
-	fmt.Println(left)
+	var (
+		so sorter
+		ss sortstore
+	)
+	f, err := os.Open("file")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Cant open file: %v", err)
+		return
+	}
+	b := bufio.NewReader(f)
+	ss = newNumSorter()
+	so = newMNsorter(b, ss, true)
+	fmt.Println(time.Since(t).Microseconds())
+
+	result, err := so.getsorted()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Cant sort file: %v", err)
+		return
+	}
+	fmt.Println(time.Since(t).Microseconds())
+
+	for k, v := range result {
+		fmt.Printf("|%d: %v|\n", k, v)
+	}
+	fmt.Println(time.Since(t).Microseconds())
 }

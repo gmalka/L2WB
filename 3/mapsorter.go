@@ -1,26 +1,52 @@
 package main
 
+import (
+	"bufio"
+	"fmt"
+	"io"
+)
+
 type msorter struct {
-	m   map[string]struct{}
-	arr sorter
+	r       *bufio.Reader
+	m       map[string]struct{}
+	arr     sortstore
 	reverse bool
 }
 
-func newmsorter(s sorter, reverse bool) *msorter {
+func newMsorter(r *bufio.Reader, s sortstore, reverse bool) *msorter {
 	return &msorter{
-		arr: s,
-		m:   make(map[string]struct{}, 10),
+		arr:     s,
+		r:       r,
+		m:       make(map[string]struct{}, 10),
 		reverse: reverse,
 	}
 }
 
-func (s *msorter) add(str string) {
-	if _, ok := s.m[str]; !ok {
-		s.add(str)
-		s.m[str] = struct{}{}
-	}
-}
+func (s *msorter) getsorted() ([]string, error) {
+	for {
+		var (
+			result []byte
+			l []byte
+			ok bool
+			err error
+		)
 
-func (s *msorter) getsorted() []string {
-	return s.arr.sort(s.reverse)
+		for l, ok, err = s.r.ReadLine(); ok && err == nil; l, ok, err = s.r.ReadLine() {
+			result = append(result, l...)
+		}
+		result = append(result, l...)
+		
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return nil, fmt.Errorf("cant read line: %v", err)
+		}
+
+		if _, ok = s.m[string(result)]; !ok {
+			s.m[string(result)] = struct{}{}
+
+			s.arr.add(string(result))
+		}
+	}
+	return s.arr.sort(s.reverse), nil
 }

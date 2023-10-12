@@ -7,16 +7,16 @@ import (
 	"strings"
 )
 
-type kstring struct {
+type knum struct {
 	arr         [][]interface{}
 	left, right int
 }
 
-func (s *kstring) Len() int {
+func (s *knum) Len() int {
 	return len(s.arr)
 }
 
-func (s *kstring) Less(i, j int) bool {
+func (s *knum) Less(i, j int) bool {
 	for t := s.left; t < len(s.arr[i]) && t < s.right; t++ {
 		if t > len(s.arr[j]) {
 			return true
@@ -33,24 +33,24 @@ func (s *kstring) Less(i, j int) bool {
 		} else if left == right {
 			continue
 		} else {
-			return left > right
+			return left < right
 		}
 	}
-
-	return true
+	
+	return len(s.arr[j]) <= len(s.arr[i])
 }
 
-func (s *kstring) Swap(i, j int) {
+func (s *knum) Swap(i, j int) {
 	s.arr[i], s.arr[j] = s.arr[j], s.arr[i]
 }
 
-func (s *kstring) String() string {
+func (s *knum) String() string {
 	return fmt.Sprintf("%v", *s)
 }
 
 func newKnumsorter(left, right int) *knumsorter {
 	return &knumsorter{
-		strs: kstring{
+		strs: knum{
 			left:  left - 1,
 			right: right - 1,
 			arr:   make([][]interface{}, 0, 10),
@@ -59,7 +59,7 @@ func newKnumsorter(left, right int) *knumsorter {
 }
 
 type knumsorter struct {
-	strs kstring
+	strs knum
 }
 
 func (n *knumsorter) add(str string) {
@@ -70,9 +70,9 @@ func (n *knumsorter) add(str string) {
 	for k, v := range s {
 		num, err := strconv.Atoi(v)
 		if err != nil {
-			result[k] = num
-		} else {
 			result[k] = v
+		} else {
+			result[k] = num
 		}
 	}
 

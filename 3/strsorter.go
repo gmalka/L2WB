@@ -8,9 +8,8 @@ type strsorter struct {
 	strs []string
 }
 
-func newStrSorter() *numsorter {
-	return &numsorter{
-		nums: make([]int, 0, 10),
+func newStrSorter() *strsorter {
+	return &strsorter{
 		strs: make([]string, 0, 10),
 	}
 }
