@@ -66,7 +66,7 @@ func main() {
 	}
 	b := bufio.NewReader(f)
 	ss = newNumSorter()
-	so = newMNsorter(b, ss, true)
+	so = newMNsorter(b, ss, false, 0)
 	fmt.Println(time.Since(t).Microseconds())
 
 	result, err := so.getsorted()

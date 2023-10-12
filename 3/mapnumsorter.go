@@ -11,13 +11,15 @@ type mnsorter struct {
 	r       *bufio.Reader
 	m       map[string]struct{}
 	arr     sortstore
+	left    int
 	reverse bool
 }
 
-func newMNsorter(r *bufio.Reader, s sortstore, reverse bool) *mnsorter {
+func newMNsorter(r *bufio.Reader, s sortstore, reverse bool, left int) *mnsorter {
 	return &mnsorter{
 		arr:     s,
 		r:       r,
+		left:    left,
 		m:       make(map[string]struct{}, 10),
 		reverse: reverse,
 	}
@@ -42,20 +44,23 @@ func (s *mnsorter) getsorted() ([]string, error) {
 		} else if err != nil {
 			return nil, fmt.Errorf("cant read line: %v", err)
 		}
-		newresult := bytes.ReplaceAll(result, []byte{' '}, []byte{})
+		bb := bytes.Split(result, []byte{' '})
 
-		if checkfornonnum(newresult) {
-			if _, ok = s.m[""]; !ok {
-				s.m[""] = struct{}{}
+		if s.left < len(bb) {
+			if checkfornonnum(bb[s.left]) {
+				if _, ok = s.m[""]; !ok {
+					s.m[""] = struct{}{}
+
+					s.arr.add(string(result))
+				}
+			} else if _, ok = s.m[string(bb[s.left])]; !ok {
+				s.m[string(bb[s.left])] = struct{}{}
 
 				s.arr.add(string(result))
 			}
-		} else if _, ok = s.m[string(newresult)]; !ok {
-			s.m[string(newresult)] = struct{}{}
-
-			s.arr.add(string(result))
 		}
 	}
+
 	return s.arr.sort(s.reverse), nil
 }
 
