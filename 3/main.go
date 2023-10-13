@@ -5,6 +5,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -20,7 +21,7 @@ type sorter interface {
 	getsorted() ([]string, error)
 }
 
-type StringSliceFlag [][]int
+type StringSliceFlag []int
 
 func (s *StringSliceFlag) String() string {
 	return fmt.Sprintf("%v", *s)
@@ -41,7 +42,7 @@ func (s *StringSliceFlag) Set(value string) error {
 		result = append(result, val)
 	}
 
-	*s = append(*s, result)
+	*s = result
 	return nil
 }
 
@@ -49,9 +50,15 @@ func main() {
 	t := time.Now()
 	var (
 		left StringSliceFlag
+		m    bool
+		r    bool
+		n    bool
 	)
 
-	flag.Var(&left, "k", "Multiple values for flag -k")
+	flag.Var(&left, "k", "")
+	flag.BoolVar(&m, "u", false, "")
+	flag.BoolVar(&r, "r", false, "")
+	flag.BoolVar(&n, "n", false, "")
 
 	flag.Parse()
 
@@ -65,9 +72,32 @@ func main() {
 		return
 	}
 	b := bufio.NewReader(f)
-	ss = newNumSorter()
-	so = newMNsorter(b, ss, false, 0)
-	fmt.Println(time.Since(t).Microseconds())
+
+	if len(left) != 0 {
+		if len(left) == 1 {
+			left = append(left, math.MaxInt)
+		}
+		if n {
+			ss = newKnumsorter(left[0], left[1])
+		} else {
+			ss = newkstrsorter(left[0], left[1])
+		}
+	} else {
+		left = append(left, 1)
+		if n {
+			ss = newNumSorter()
+		} else {
+			ss = newStrSorter()
+		}
+	}
+
+	if n && m {
+		so = newMNsorter(b, ss, r, left)
+	} else if m {
+		so = newMsorter(b, ss, r, left)
+	} else {
+		so = newSSorter(b, ss, r)
+	}
 
 	result, err := so.getsorted()
 	if err != nil {

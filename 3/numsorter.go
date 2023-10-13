@@ -74,7 +74,7 @@ func (s *num) Len() int {
 func (s *num) Less(i, j int) bool {
 	for t := 0; t < len(s.arr[i]); t++ {
 		if t > len(s.arr[j]) {
-			return true
+			return false
 		}
 
 		left, ok1 := s.arr[i][t].(int)
@@ -92,7 +92,7 @@ func (s *num) Less(i, j int) bool {
 		}
 	}
 
-	return len(s.arr[j]) <= len(s.arr[i])
+	return len(s.arr[j]) >= len(s.arr[i])
 }
 
 func (s *num) Swap(i, j int) {

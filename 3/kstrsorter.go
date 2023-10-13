@@ -16,19 +16,43 @@ func (s *kstring) Len() int {
 }
 
 func (s *kstring) Less(i, j int) bool {
-	for t := s.left; t < len(s.arr[i]) && t < s.right; t++ {
-		if t > len(s.arr[j]) {
-			return true
-		}
-
-		if s.arr[i][t] == s.arr[j][t] {
-			continue
+	var (
+		l, r string
+	)
+	if len(s.arr[i]) > s.left {
+		if len(s.arr[i]) < s.right {
+			l = strings.Join(s.arr[i][s.left:len(s.arr[i])], " ")
 		} else {
-			return s.arr[i][t] > s.arr[j][t]
+			l = strings.Join(s.arr[i][s.left:s.right], " ")
 		}
+	} else {
+		l = ""
 	}
 
-	return true
+	if len(s.arr[j]) > s.left {
+		if len(s.arr[j]) < s.right {
+			r = strings.Join(s.arr[j][s.left:len(s.arr[j])], " ")
+		} else {
+			r = strings.Join(s.arr[j][s.left:s.right], " ")
+		}
+	} else {
+		r = ""
+	}
+
+	return l <= r
+	// for t := s.left; t < len(s.arr[i]) && t < s.right; t++ {
+	// 	if t > len(s.arr[j]) {
+	// 		return true
+	// 	}
+
+	// 	if s.arr[i][t] == s.arr[j][t] {
+	// 		continue
+	// 	} else {
+	// 		return s.arr[i][t] > s.arr[j][t]
+	// 	}
+	// }
+
+	// return true
 }
 
 func (s *kstring) Swap(i, j int) {
@@ -43,7 +67,7 @@ func newkstrsorter(left, right int) *kstrsorter {
 	return &kstrsorter{
 		strs: kstring{
 			left:  left - 1,
-			right: right - 1,
+			right: right,
 			arr:   make([][]string, 0, 10),
 		},
 	}

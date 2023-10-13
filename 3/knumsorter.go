@@ -18,8 +18,8 @@ func (s *knum) Len() int {
 
 func (s *knum) Less(i, j int) bool {
 	for t := s.left; t < len(s.arr[i]) && t < s.right; t++ {
-		if t > len(s.arr[j]) {
-			return true
+		if t >= len(s.arr[j]) {
+			return false
 		}
 
 		left, ok1 := s.arr[i][t].(int)
@@ -27,13 +27,13 @@ func (s *knum) Less(i, j int) bool {
 		if !ok1 && !ok2 {
 			continue
 		} else if !ok1 {
-			return false
-		} else if !ok2 {
 			return true
+		} else if !ok2 {
+			return true 
 		} else if left == right {
 			continue
 		} else {
-			return left < right
+			return left <= right
 		}
 	}
 	
@@ -52,7 +52,7 @@ func newKnumsorter(left, right int) *knumsorter {
 	return &knumsorter{
 		strs: knum{
 			left:  left - 1,
-			right: right - 1,
+			right: right,
 			arr:   make([][]interface{}, 0, 10),
 		},
 	}

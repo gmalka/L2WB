@@ -11,15 +11,16 @@ type mnsorter struct {
 	r       *bufio.Reader
 	m       map[string]struct{}
 	arr     sortstore
-	left    int
+	borders []int
 	reverse bool
 }
 
-func newMNsorter(r *bufio.Reader, s sortstore, reverse bool, left int) *mnsorter {
+func newMNsorter(r *bufio.Reader, s sortstore, reverse bool, borders []int) *mnsorter {
+	borders[0] -= 1
 	return &mnsorter{
 		arr:     s,
 		r:       r,
-		left:    left,
+		borders: borders,
 		m:       make(map[string]struct{}, 10),
 		reverse: reverse,
 	}
@@ -46,18 +47,22 @@ func (s *mnsorter) getsorted() ([]string, error) {
 		}
 		bb := bytes.Split(result, []byte{' '})
 
-		if s.left < len(bb) {
-			if checkfornonnum(bb[s.left]) {
+		if s.borders[0] < len(bb) {
+			if checkfornonnum(bb[s.borders[0]]) {
 				if _, ok = s.m[""]; !ok {
 					s.m[""] = struct{}{}
 
 					s.arr.add(string(result))
 				}
-			} else if _, ok = s.m[string(bb[s.left])]; !ok {
-				s.m[string(bb[s.left])] = struct{}{}
+			} else if _, ok = s.m[string(bb[s.borders[0]])]; !ok {
+				s.m[string(bb[s.borders[0]])] = struct{}{}
 
 				s.arr.add(string(result))
 			}
+		} else if _, ok = s.m["\x01"]; !ok {
+			s.m["\x01"] = struct{}{}
+
+			s.arr.add(string(result))
 		}
 	}
 
