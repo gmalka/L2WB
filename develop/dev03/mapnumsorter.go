@@ -16,7 +16,7 @@ type mnsorter struct {
 }
 
 func newMNsorter(r *bufio.Reader, s sortstore, reverse bool, borders []int) *mnsorter {
-	borders[0] -= 1
+	borders[0]--
 	return &mnsorter{
 		arr:     s,
 		r:       r,

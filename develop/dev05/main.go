@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-type Flags struct {
+type flags struct {
 	A    int
 	B    int
 	C    int
@@ -128,7 +128,7 @@ func main() {
 	}
 }
 
-func parsFlags() (*Flags, error) {
+func parsFlags() (*flags, error) {
 	if len(os.Args) < 3 {
 		return nil, errors.New("there is not reg expression ")
 	}
@@ -144,5 +144,5 @@ func parsFlags() (*Flags, error) {
 	n := flag.Bool("n", false, "напечатать номер строки")
 
 	flag.Parse()
-	return &Flags{*A, *B, *C, *c, *i, *v, *F, *n, reg, file}, nil
+	return &flags{*A, *B, *C, *c, *i, *v, *F, *n, reg, file}, nil
 }

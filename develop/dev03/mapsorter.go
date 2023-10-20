@@ -17,7 +17,7 @@ type msorter struct {
 }
 
 func newMsorter(r *bufio.Reader, s sortstore, reverse bool, borders []int) *msorter {
-	borders[0] -= 1
+	borders[0]--
 	return &msorter{
 		arr:     s,
 		r:       r,

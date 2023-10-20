@@ -21,13 +21,13 @@ type sorter interface {
 	getsorted() ([]string, error)
 }
 
-type StringSliceFlag []int
+type stringSliceFlag []int
 
-func (s *StringSliceFlag) String() string {
+func (s *stringSliceFlag) String() string {
 	return fmt.Sprintf("%v", *s)
 }
 
-func (s *StringSliceFlag) Set(value string) error {
+func (s *stringSliceFlag) Set(value string) error {
 	st := strings.Split(value, ",")
 	if len(st) > 2 || len(st) == 0 {
 		return errors.New("incorrect number of arguments")
@@ -49,7 +49,7 @@ func (s *StringSliceFlag) Set(value string) error {
 func main() {
 	t := time.Now()
 	var (
-		left StringSliceFlag
+		left stringSliceFlag
 		m    bool
 		r    bool
 		n    bool

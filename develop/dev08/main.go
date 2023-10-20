@@ -36,7 +36,7 @@ func main() {
 			continue
 		}
 
-		err = Execution(command)
+		err = execution(command)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			continue
@@ -44,7 +44,7 @@ func main() {
 	}
 }
 
-func Execution(src string) (err error) {
+func execution(src string) (err error) {
 	src = strings.Trim(src, "\n")
 	commands := strings.Split(src, "|")
 	cmds := make([]*exec.Cmd, len(commands))

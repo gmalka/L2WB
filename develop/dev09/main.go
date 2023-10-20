@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func DownloadStite(url *url.URL) error {
+func downloadStite(url *url.URL) error {
 	var (
 		filename string
 	)
@@ -63,7 +63,7 @@ func main() {
 			log.Panicf("Cant parse url %s: %s\n", v, err)
 		}
 
-		err = DownloadStite(u)
+		err = downloadStite(u)
 		if err != nil {
 			log.Panicf("Cant download site with url %s: %s\n", u.String(), err)
 		}
