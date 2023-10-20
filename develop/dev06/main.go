@@ -58,6 +58,7 @@ func main() {
 		s bool
 		d string
 		c columns
+		b *bufio.Reader
 	)
 	flag.BoolVar(&s, "s", false, `-s - "separated" - только строки с разделителем`)
 	flag.StringVar(&d, "d", "\n", `-d - "delimiter" - использовать другой разделитель`)
@@ -70,23 +71,25 @@ func main() {
 	}
 	f, err := os.Open(os.Args[len(os.Args)-1])
 	if err != nil {
-		log.Printf("Cant open file: %v\n", err)
-		return
+		b = bufio.NewReader(os.Stdin)
+	} else {
+		b = bufio.NewReader(f)
 	}
-	b := bufio.NewReader(f)
 	result := make([]string, 0, 10)
 	for {
 		str, err := b.ReadString('\n')
 
-		if err != nil && err != io.EOF {
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
 			log.Printf("Cant read from file: %v\n", err)
 			return
 		}
-		str = str[:len(str)-1]
 
-		strs := strings.Split(str, d)
+		if !s || (s && strings.Contains(str, d)) {
+			strs := strings.Split(str, d)
 
-		if !(s && len(strs) == 1) {
 			st := strings.Builder{}
 
 			i := 0
@@ -107,6 +110,11 @@ func main() {
 	}
 
 	for _, v :=range result {
-		fmt.Println(v)
+		//fmt.Printf("|%s %d|\n", v, len(v))
+		if v[len(v) - 1] != '\n' {
+			fmt.Println(v)
+		} else {
+			fmt.Print(v)
+		}
 	}
 }
